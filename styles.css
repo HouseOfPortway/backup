@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@700;800&display=swap');
+
+:root{
+  --bg: #cbc7c7;
+  --bg-panel: #ffffff;
+  --ink: #1d1c1c;
+  --ink-soft: #4a4744;
+  --line: #1d1c1c;
+  --muted: #b7b2ad;
+  --muted-2: #e5e2df;
+  --serif: 'forevs', Georgia, serif;
+  --mono: 'IBM Plex Mono', 'Courier Prime', monospace;
+  --sans: 'IBM Plex Mono', monospace;}
+
+*{ box-sizing: border-box; }
+
+html{ -webkit-font-smoothing: antialiased; }
+
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  min-height: 100vh;
+}
+
+a{ color: inherit; }
+
+.wrap{
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 40px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- footer wordmark ---- */
+.brand{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+}
+.brand .dot{
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+  transform: translateY(-9px);
+}
+
+.brand img{
+  height: 16px;      /* adjust until it visually matches the old text size */
+  width: auto;
+  display: inline-block;
+}
+
+.site-footer{
+  padding: 40px 0 48px;
+  margin-top: auto;
+  text-align: center;
+}
+
+/* ---- focus ---- */
+a:focus-visible, button:focus-visible, .day:focus-visible, .slot:focus-visible{
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+}
+
+@media (max-width: 720px){
+  .wrap{ padding: 0 22px; }
+}

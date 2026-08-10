@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — House Of Portway</title>
+<link rel="stylesheet" href="https://use.typekit.net/dqp5aze.css">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .contact-main{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 60px 0 40px;
+  }
+  .contact-grid{
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 100px;
+    align-items: start;
+    width: 100%;
+  }
+
+  /* ---- calendar card ---- */
+  .cal-card{
+    background: var(--bg-panel);
+    padding: 22px 22px 24px;
+    font-family: var(--sans);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+	max-height: 520px;
+    overflow-y: auto;
+  }
+  .cal-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .cal-head h2{
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+  }
+  .cal-nav{ display: flex; gap: 4px; }
+  .cal-nav button{
+    width: 24px; height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1;
+    border-radius: 5px;
+  }
+  .cal-nav button:hover{ background: var(--muted-2); color: var(--ink); }
+
+  .cal-weekdays{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #9a958f;
+    margin-bottom: 6px;
+  }
+  .cal-weekdays div{ text-align: center; padding: 4px 0; }
+
+  .cal-days{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    row-gap: 4px;
+  }
+  .day{
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    cursor: default;
+    border-radius: 7px;
+    position: relative;
+    font-family: var(--sans);
+  }
+  .day.empty{ visibility: hidden; }
+  .day.avail{
+    background: transparent;
+    border: 1.4px solid var(--muted-2);
+    cursor: pointer;
+  }
+  .day.avail:hover{ border-color: var(--ink); }
+  .day.selected{
+    background: var(--ink);
+    color: #fff;
+    cursor: pointer;
+  }
+  .day .today-dot{
+    position: absolute;
+    bottom: 3px;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .cal-slots-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 0 10px;
+  }
+  .cal-slots-head h3{
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+    font-family: var(--sans);
+  }
+  .cal-slots-head h3 span{ font-weight: 400; color: var(--ink-soft); }
+
+  .toggle{
+    display: flex;
+    border: 1px solid var(--muted-2);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .toggle button{
+    border: none;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    padding: 4px 9px;
+    cursor: pointer;
+    color: var(--ink-soft);
+  }
+  .toggle button.active{
+    background: var(--muted-2);
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .slot{
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 11px 0;
+    margin-bottom: 8px;
+    border: 1px solid var(--muted-2);
+    border-radius: 8px;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .slot:hover{ border-color: var(--ink); }
+  .slot.selected{ background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  /* ---- invite form ---- */
+  .if-back{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 14px;
+  }
+  .if-back:hover{ color: var(--ink); }
+
+  .if-summary{
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 18px;
+  }
+
+  .if-label{
+    display: block;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .if-label .req{ color: var(--ink-soft); font-weight: 400; }
+
+  .if-input, .if-textarea{
+    width: 100%;
+    border: 1px solid var(--muted-2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    color: var(--ink);
+    background: transparent;
+    margin-bottom: 16px;
+  }
+  .if-input:focus, .if-textarea:focus{ outline: none; border-color: var(--ink); }
+  .if-textarea{ resize: vertical; min-height: 72px; }
+  .if-textarea::placeholder, .if-input::placeholder{ color: #a8a39d; }
+
+  .if-guest-toggle{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 4px;
+  }
+  .if-guest-toggle:hover{ color: var(--ink); }
+  .if-guest-row{ margin-top: 12px; }
+
+  .if-terms{
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin: 18px 0 0;
+  }
+
+  .if-actions{
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 20px;
+  }
+  .if-cancel{
+    border: none;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 10px 4px;
+  }
+  .if-cancel:hover{ color: var(--ink); }
+  .if-confirm{
+    border: none;
+    border-radius: 8px;
+    background: var(--ink);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  .if-confirm:hover{ opacity: 0.85; }
+
+  .if-success{
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  /* ---- right column ---- */
+  .contact-copy p{
+    font-size: clamp(24px, 3vw, 34px);
+    line-height: 1.35;
+    margin: 0 0 34px;
+    max-width: 640px;
+  }
+  .contact-copy .sub{
+    font-size: clamp(24px, 3vw, 34px);
+    margin: 0 0 6px;
+  }
+  .email-link{
+    font-size: clamp(24px, 3vw, 34px);
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    display: inline-block;
+    margin-bottom: 36px;
+  }
+  .email-link:hover{ opacity: 0.7; }
+
+  .socials{ display: flex; gap: 20px; }
+  .socials a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+  }
+  .socials svg{ width: 24px; height: 24px; }
+  .socials svg *{ transition: fill 0.15s ease; }
+  .socials a:hover svg{ fill: currentColor; }
+  .socials a:hover svg .ig-lens{ fill: var(--bg); }
+
+  @media (max-width: 860px){
+    .contact-grid{ grid-template-columns: 1fr; gap: 46px; }
+    .cal-card{ max-width: 360px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="contact-main">
+      <div class="contact-grid">
+
+        <div class="cal-card">
+          <div class="cal-head">
+            <h2 id="calMonthLabel">August 2026</h2>
+            <div class="cal-nav">
+              <button type="button" id="prevMonth" aria-label="Previous month">&#8249;</button>
+              <button type="button" id="nextMonth" aria-label="Next month">&#8250;</button>
+            </div>
+          </div>
+          <div class="cal-weekdays">
+            <div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div><div>SUN</div>
+            </div>
+          <div class="cal-days" id="calDays"></div>
+
+          <div class="cal-slots-head">
+            <h3 id="slotsLabel">Mon <span>10</span></h3>
+            <div class="toggle">
+              <button type="button" class="active" data-fmt="24h">24h</button>
+              <button type="button" data-fmt="12h">12h</button>
+            </div>
+          </div>
+          <div id="slotsList"></div>
+
+          <div class="invite-form" id="inviteForm" hidden>
+            <button type="button" class="if-back" id="ifBack">&#8249; Back</button>
+            <p class="if-summary" id="ifSummary"></p>
+
+            <form id="bookingForm">
+              <label class="if-label" for="ifName">Your name <span class="req">*</span></label>
+              <input class="if-input" type="text" id="ifName" required>
+
+              <label class="if-label" for="ifEmail">Email address <span class="req">*</span></label>
+              <input class="if-input" type="email" id="ifEmail" required>
+
+              <label class="if-label" for="ifNotes">Additional notes</label>
+              <textarea class="if-textarea" id="ifNotes" placeholder="Please share anything that will help prepare for our meeting."></textarea>
+
+              <button type="button" class="if-guest-toggle" id="ifGuestToggle">+ Add guest</button>
+              <div class="if-guest-row" id="ifGuestRow" hidden>
+                <label class="if-label" for="ifGuestEmail">Guest email</label>
+                <input class="if-input" type="email" id="ifGuestEmail" placeholder="guest@email.com">
+              </div>
+
+              <div class="if-actions">
+                <button type="button" class="if-cancel" id="ifCancel">Back</button>
+                <button type="submit" class="if-confirm">Confirm</button>
+              </div>
+            </form>
+
+            <div class="if-success" id="ifSuccess" hidden></div>
+          </div>
+        </div>
+
+        <div class="contact-copy">
+          <p>Let's talk. From early concepts to final launch, we create everything to feel calm, refined, and timeless.</p>
+          <p class="sub">Not into calls? Feel free to email us.</p>
+          <a class="email-link" href="mailto:admin@houseofportway.com">admin@houseofportway.com</a>
+          <div class="socials">
+            <a href="https://www.instagram.com/houseofportway/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <rect class="ig-frame" x="2.5" y="2.5" width="19" height="19" rx="5.5"/>
+                <circle class="ig-lens" cx="12" cy="12" r="4.4"/>
+                <circle cx="17.6" cy="6.4" r="0.4" fill="currentColor" stroke="none"/>
+              </svg>
+            </a>
+            <a href="https://www.linkedin.com/company/houseofportway/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                <rect x="2" y="9" width="4" height="12"/>
+                <circle cx="4" cy="4" r="2"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand" href="index.html"><img src="media/logo.png" alt="House Of Portway"></a>
+    </footer>
+  </div>
+
+<script>
+(function(){
+  const weekdayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  const today = new Date(2026, 7, 10); // matches the design's Mon 10 Aug 2026
+  let viewYear = today.getFullYear();
+  let viewMonth = today.getMonth();
+  let selectedDate = new Date(today);
+  let fmt = '24h';
+
+  const monthLabel = document.getElementById('calMonthLabel');
+  const daysEl = document.getElementById('calDays');
+  const slotsLabel = document.getElementById('slotsLabel');
+  const slotsList = document.getElementById('slotsList');
+
+  const calWeekdaysEl = document.querySelector('.cal-weekdays');
+  const calSlotsHeadEl = document.querySelector('.cal-slots-head');
+  const inviteForm = document.getElementById('inviteForm');
+  const ifSummary = document.getElementById('ifSummary');
+  const bookingForm = document.getElementById('bookingForm');
+  const ifSuccess = document.getElementById('ifSuccess');
+  const ifGuestToggle = document.getElementById('ifGuestToggle');
+  const ifGuestRow = document.getElementById('ifGuestRow');
+
+  // deterministic pseudo-random slot generator per date, so it feels alive but stable
+  function slotsFor(date){
+    // fixed slots: every 45 min, 9:00–1:00pm and 3:00–5:00pm, with 1–2pm as lunch
+    return [
+      {h: 9,  m: 0},
+      {h: 9,  m: 45},
+      {h: 10, m: 30},
+      {h: 11, m: 15},
+      {h: 12, m: 0},
+      {h: 12, m: 45},
+      {h: 15, m: 0},
+      {h: 15, m: 45},
+      {h: 16, m: 30},
+    ];
+  }
+
+  function fmtTime(h, m){
+    const mm = String(m).padStart(2,'0');
+    if(fmt === '24h') return String(h).padStart(2,'0') + ':' + mm;
+    const period = h >= 12 ? 'PM' : 'AM';
+    let h12 = h % 12; if(h12 === 0) h12 = 12;
+    return h12 + ':' + mm + ' ' + period;
+  }
+
+  function isWeekday(date){
+    const d = date.getDay();
+    return d !== 0 && d !== 6;
+  }
+
+  function sameDate(a,b){
+    return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+  }
+
+  function renderCalendar(){
+    monthLabel.textContent = monthNames[viewMonth] + ' ' + viewYear;
+    daysEl.innerHTML = '';
+
+    const jsDay = new Date(viewYear, viewMonth, 1).getDay();
+    const firstDay = (jsDay + 6) % 7; // shift so Monday = 0 ... Sunday = 6
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+    for(let i=0; i<firstDay; i++){
+      const empty = document.createElement('div');
+      empty.className = 'day empty';
+      daysEl.appendChild(empty);
+    }
+
+    for(let d=1; d<=daysInMonth; d++){
+      const date = new Date(viewYear, viewMonth, d);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = d;
+      btn.className = 'day';
+
+      const isSelected = sameDate(date, selectedDate);
+      const isToday = sameDate(date, today);
+      const past = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+      if(isWeekday(date) && !past){
+        btn.classList.add('avail');
+        btn.addEventListener('click', () => {
+          selectedDate = date;
+          renderCalendar();
+          renderSlots();
+        });
+      }
+      if(isSelected){
+        btn.classList.add('selected');
+      }
+      if(isToday){
+        const dot = document.createElement('span');
+        dot.className = 'today-dot';
+        btn.appendChild(dot);
+      }
+      daysEl.appendChild(btn);
+    }
+  }
+
+  function renderSlots(){
+    slotsLabel.innerHTML = weekdayNames[selectedDate.getDay()] + ' <span>' + selectedDate.getDate() + '</span>';
+    slotsList.innerHTML = '';
+
+    if(!isWeekday(selectedDate)){
+      const msg = document.createElement('p');
+      msg.style.fontFamily = 'var(--sans)';
+      msg.style.fontSize = '13px';
+      msg.style.color = 'var(--ink-soft)';
+      msg.textContent = 'No availability on weekends.';
+      slotsList.appendChild(msg);
+      return;
+    }
+
+    const slots = slotsFor(selectedDate);
+    slots.forEach(s => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'slot';
+      b.textContent = fmtTime(s.h, s.m);
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.slot').forEach(el => el.classList.remove('selected'));
+        b.classList.add('selected');
+        openInviteForm(selectedDate, s);
+      });
+      slotsList.appendChild(b);
+    });
+  }
+
+  function openInviteForm(date, slot){
+    const dayName = weekdayNames[date.getDay()];
+    const monthName = monthNames[date.getMonth()];
+    ifSummary.textContent = dayName + ' ' + date.getDate() + ' ' + monthName + ' · ' + fmtTime(slot.h, slot.m);
+
+    calWeekdaysEl.hidden = true;
+    daysEl.hidden = true;
+    calSlotsHeadEl.hidden = true;
+    slotsList.hidden = true;
+
+    bookingForm.hidden = false;
+    ifSuccess.hidden = true;
+    inviteForm.hidden = false;
+  }
+
+  function closeInviteForm(){
+    inviteForm.hidden = true;
+    calWeekdaysEl.hidden = false;
+    daysEl.hidden = false;
+    calSlotsHeadEl.hidden = false;
+    slotsList.hidden = false;
+
+    document.querySelectorAll('.slot').forEach(el => el.classList.remove('selected'));
+    bookingForm.reset();
+    ifGuestRow.hidden = true;
+  }
+
+  document.getElementById('ifBack').addEventListener('click', closeInviteForm);
+  document.getElementById('ifCancel').addEventListener('click', closeInviteForm);
+
+  ifGuestToggle.addEventListener('click', () => {
+    ifGuestRow.hidden = !ifGuestRow.hidden;
+  });
+
+  bookingForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('ifName').value.trim();
+    bookingForm.hidden = true;
+    ifSuccess.hidden = false;
+    ifSuccess.innerHTML = 'Thanks' + (name ? ', ' + name : '') + ' — your request for <strong>' +
+      ifSummary.textContent + '</strong> is booked in. We\'ll email a confirmation shortly.';
+  });
+
+  document.getElementById('prevMonth').addEventListener('click', () => {
+    viewMonth--;
+    if(viewMonth < 0){ viewMonth = 11; viewYear--; }
+    renderCalendar();
+  });
+  document.getElementById('nextMonth').addEventListener('click', () => {
+    viewMonth++;
+    if(viewMonth > 11){ viewMonth = 0; viewYear++; }
+    renderCalendar();
+  });
+
+  document.querySelectorAll('.toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      fmt = btn.dataset.fmt;
+      renderSlots();
+    });
+  });
+
+  renderCalendar();
+  renderSlots();
+})();
+</script>
+</body>
+</html>

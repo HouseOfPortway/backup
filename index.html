@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>House Of Portway</title>
+<link rel="stylesheet" href="https://use.typekit.net/dqp5aze.css">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .home-main{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0 20px;
+  }
+  .home-inner{
+    text-align: center;
+    max-width: 980px;
+  }
+  .headline{
+    font-size: clamp(40px, 6.4vw, 76px);
+    line-height: 1.06;
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .headline-row{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+  .wonderful{
+    font-style: italic;
+    font-weight: 400;
+    position: relative;
+    padding-bottom: 6px;
+    display: inline-block;
+  }
+  .wonderful::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    right: -4%;
+    bottom: -2px;
+    height: 3px;
+    background: var(--ink);
+  }
+  .swatch{
+    width: 132px;
+    height: 88px;
+    background: #f2f0ee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    align-self: center;
+  }
+	
+.swatch video{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+	
+  .meta-line{
+    margin-top: 64px;
+    font-family: var(--mono);
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+  .meta-line a{
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .meta-line a:hover{ opacity: 0.65; }
+
+  @media (max-width: 640px){
+    .headline-row{ flex-direction: column; gap: 14px; }
+    .swatch{ width: 108px; height: 72px; }
+    .meta-line{ margin-top: 40px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="home-main">
+      <div class="home-inner">
+        <p class="headline">We're working on something</p>
+        <div class="headline-row">
+          <p class="headline wonderful">wonderful.</p>
+          <div class="swatch">
+           <video src="media/hop-frame-animation-3.mp4" autoplay loop muted playsinline></video>
+         </div>
+        </div>
+
+        <p class="meta-line">
+          In the meantime, contact us <a href="contact.html">here</a> or view our pricelist <a href="pricelist.html">here</a>
+        </p>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand" href="index.html"><img src="media/logo.png" alt="House of Portway"></a>
+    </footer>
+  </div>
+</body>
+</html>
